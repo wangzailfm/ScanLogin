@@ -1,2 +1,2 @@
 # ScanLogin
-Automatic confirmation login by scanning QRCode security login to QQ/TIM
+Using Xposed to achieve Automatic confirmation login by scanning QRCode security login to QQ/TIM。
