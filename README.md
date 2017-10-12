@@ -21,4 +21,4 @@ Supported versions have:
 
 
 ### Sample
-![AutoLogin](http://ovlhlis72.bkt.clouddn.com/1507769568020.gif)
+![AutoLogin](./scanLoginTIM.gif)
