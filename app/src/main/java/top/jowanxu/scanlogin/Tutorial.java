@@ -24,6 +24,11 @@ public class Tutorial implements IXposedHookLoadPackage {
     private static final String CONTAIN_TEXT = "允许登录";
     private static final String HOOK_ERROR = "Hook 出错 ";
 
+    /**
+     * 判断doOnCreate
+     */
+    private static int count = 0;
+
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if (lpparam.packageName.equals(COM_TENCENT_TIM)
@@ -48,6 +53,14 @@ public class Tutorial implements IXposedHookLoadPackage {
                         new XC_MethodHook() {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                // 每次打开都会调用两次doOnCreate
+                                if (count == 1) {
+                                    return;
+                                }
+                                // 调用doOnCreate超过两次后，也就是第二次打开扫一扫后就设置为0
+                                if (count > 1) {
+                                    count = 0;
+                                }
                                 Activity activity = (Activity) param.thisObject;
                                 final String resultStr = getHookName(lpparam.packageName,
                                         activity.getPackageManager().getPackageInfo(lpparam.packageName, 0).versionName);
@@ -78,7 +91,11 @@ public class Tutorial implements IXposedHookLoadPackage {
                                                             // 当Button的Text为允许登录TIM/允许登录QQ的时候才实现点击
                                                             if (loginButton.getText().toString()
                                                                     .contains(CONTAIN_TEXT)) {
-                                                                loginButton.performClick();
+                                                                if (count == 0) {
+                                                                    loginButton.performClick();
+                                                                }
+                                                                // 每次都增加
+                                                                count++;
                                                             }
                                                         }
                                                     });
@@ -117,6 +134,8 @@ public class Tutorial implements IXposedHookLoadPackage {
      */
     private String getTIMHookName(String versionName) {
         switch (versionName) {
+            case "2.0.0":
+                return "hxq";
             case "1.2.0":
                 return "hzq";
             case "1.1.5":
