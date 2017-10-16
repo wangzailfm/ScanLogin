@@ -21,7 +21,7 @@ public class Tutorial implements IXposedHookLoadPackage {
 
     private static final String COM_TENCENT_TIM = "com.tencent.tim";
     private static final String COM_TENCENT_QQ = "com.tencent.mobileqq";
-    private static final String COM_TENCENT_BIZ_QRCODE_ACTIVITY_QRLOGIN_ACTIVITY = "com.tencent.biz.qrcode.activity.QRLoginActivity";
+    private static final String QR_CODE_HOOK_CLASS_NAME = "com.tencent.biz.qrcode.activity.QRLoginActivity";
     private static final String DO_ON_CREATE = "doOnCreate";
     private static final String ANDROID_WIDGET_BUTTON = "android.widget.Button";
     private static final String HANDLE_MESSAGE = "handleMessage";
@@ -30,7 +30,7 @@ public class Tutorial implements IXposedHookLoadPackage {
     private static final String COM_TENCENT_MM = "com.tencent.mm";
     private static final String WECHAT_LOGIN_TEXT = "登录";
     private static final String AUTO_LOGIN = "自动登录成功";
-    private static final String WECHAT_HOOK_METHOD_NAME = "com.tencent.mm.plugin.webwx.ui.ExtDeviceWXLoginUI";
+    private static final String WECHAT_HOOK_CLASS_NAME = "com.tencent.mm.plugin.webwx.ui.ExtDeviceWXLoginUI";
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
