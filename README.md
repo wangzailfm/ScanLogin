@@ -40,4 +40,4 @@ Supported versions hava:
 ![autoConfirmLogin](./autoConfirmWeChatLogin.gif)
 
 ## Note
-All apk is download by coolApk [coolApk](https://www.coolapk.com/).
+All apk is download by [coolApk](https://www.coolapk.com/).
