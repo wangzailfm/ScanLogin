@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
@@ -13,6 +14,9 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
+/**
+ * @author Jowan
+ */
 public class Tutorial implements IXposedHookLoadPackage {
 
     private static final String COM_TENCENT_TIM = "com.tencent.tim";
@@ -23,97 +27,181 @@ public class Tutorial implements IXposedHookLoadPackage {
     private static final String HANDLE_MESSAGE = "handleMessage";
     private static final String CONTAIN_TEXT = "允许登录";
     private static final String HOOK_ERROR = "Hook 出错 ";
+    private static final String COM_TENCENT_MM = "com.tencent.mm";
+    private static final String WECHAT_LOGIN_TEXT = "登录";
+    private static final String AUTO_LOGIN = "自动登录成功";
+    private static final String WECHAT_HOOK_METHOD_NAME = "com.tencent.mm.plugin.webwx.ui.ExtDeviceWXLoginUI";
+
+    @Override
+    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        if (lpparam.packageName.equals(COM_TENCENT_MM)) {
+            autoConfirmWeChatLogin(lpparam);
+            return;
+        }
+        if (lpparam.packageName.equals(COM_TENCENT_TIM)
+                || lpparam.packageName.equals(COM_TENCENT_QQ)) {
+            autoQQConfirmLogin(lpparam);
+        }
+    }
+
 
     /**
      * 判断doOnCreate
      */
     private static int count = 0;
 
-    @Override
-    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        if (lpparam.packageName.equals(COM_TENCENT_TIM)
-                || lpparam.packageName.equals(COM_TENCENT_QQ)) {
-            // 获取Class
-            final Class<?> aClass = XposedHelpers
-                    .findClassIfExists(COM_TENCENT_BIZ_QRCODE_ACTIVITY_QRLOGIN_ACTIVITY,
-                            lpparam.classLoader);
-            if (aClass == null) {
-                return;
-            }
-            // 获取Class里面的Field
-            final Field[] declaredFields = aClass.getDeclaredFields();
-            if (declaredFields == null) {
-                return;
-            }
-            try {
-                // Hook指定方法
-                XposedHelpers.findAndHookMethod(aClass,
-                        DO_ON_CREATE,
-                        Bundle.class,
-                        new XC_MethodHook() {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                // 每次打开都会调用两次doOnCreate
-                                if (count == 1) {
-                                    return;
-                                }
-                                // 调用doOnCreate超过两次后，也就是第二次打开扫一扫后就设置为0
-                                if (count > 1) {
-                                    count = 0;
-                                }
-                                Activity activity = (Activity) param.thisObject;
-                                final String resultStr = getHookName(lpparam.packageName,
-                                        activity.getPackageManager().getPackageInfo(lpparam.packageName, 0).versionName);
-                                for (Field declaredField : declaredFields) {
-                                    // 设置true
-                                    declaredField.setAccessible(true);
-                                    // 判断类型是否是Button
-                                    if (declaredField.getGenericType().toString().contains(ANDROID_WIDGET_BUTTON)) {
-                                        // 获取值
-                                        final Button loginButton = (Button) declaredField.get(param.thisObject);
-                                        if (loginButton == null) {
-                                            return;
-                                        }
-                                        // 默认的Button的Text为空，需要在Handler这个类里面的方法后面加上判断
-                                        Class<?> handlerClass = XposedHelpers.findClassIfExists(resultStr,
-                                                lpparam.classLoader);
-                                        if (handlerClass == null) {
-                                            return;
-                                        }
-                                        try {
-                                            // Hook方法，对handleMessage方法调用后，进行判断Button的Text进行判断，并且自动调用点击方法
-                                            XposedHelpers.findAndHookMethod(handlerClass,
-                                                    HANDLE_MESSAGE,
-                                                    Message.class,
-                                                    new XC_MethodHook() {
-                                                        @Override
-                                                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                                            // 当Button的Text为允许登录TIM/允许登录QQ的时候才实现点击
-                                                            if (loginButton.getText().toString()
-                                                                    .contains(CONTAIN_TEXT)) {
-                                                                if (count == 0) {
-                                                                    loginButton.performClick();
-                                                                }
-                                                                // 每次都增加
-                                                                count++;
+    /**
+     * 扫一扫电脑端二维码后，自动点击允许登录TIM/QQ按钮
+     *
+     * @param lpparam LoadPackageParam
+     */
+    private void autoQQConfirmLogin(final XC_LoadPackage.LoadPackageParam lpparam) {
+        // 获取Class
+        final Class<?> aClass = XposedHelpers
+                .findClassIfExists(COM_TENCENT_BIZ_QRCODE_ACTIVITY_QRLOGIN_ACTIVITY,
+                        lpparam.classLoader);
+        if (aClass == null) {
+            return;
+        }
+        // 获取Class里面的Field
+        final Field[] declaredFields = aClass.getDeclaredFields();
+        if (declaredFields == null) {
+            return;
+        }
+        try {
+            // Hook指定方法
+            XposedHelpers.findAndHookMethod(aClass,
+                    DO_ON_CREATE,
+                    Bundle.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            // 每次打开都会调用两次doOnCreate
+                            if (count == 1) {
+                                return;
+                            }
+                            // 调用doOnCreate超过两次后，也就是第二次打开扫一扫后就设置为0
+                            if (count > 1) {
+                                count = 0;
+                            }
+                            Activity activity = (Activity) param.thisObject;
+                            final String resultStr = getHookName(lpparam.packageName,
+                                    activity.getPackageManager().getPackageInfo(lpparam.packageName, 0).versionName);
+                            for (Field declaredField : declaredFields) {
+                                // 设置true
+                                declaredField.setAccessible(true);
+                                // 判断类型是否是Button
+                                if (declaredField.getGenericType().toString().contains(ANDROID_WIDGET_BUTTON)) {
+                                    // 获取值
+                                    final Button loginButton = (Button) declaredField.get(param.thisObject);
+                                    if (loginButton == null) {
+                                        return;
+                                    }
+                                    // 默认的Button的Text为空，需要在Handler这个类里面的方法后面加上判断
+                                    Class<?> handlerClass = XposedHelpers.findClassIfExists(resultStr,
+                                            lpparam.classLoader);
+                                    if (handlerClass == null) {
+                                        return;
+                                    }
+                                    try {
+                                        // Hook方法，对handleMessage方法调用后，进行判断Button的Text进行判断，并且自动调用点击方法
+                                        XposedHelpers.findAndHookMethod(handlerClass,
+                                                HANDLE_MESSAGE,
+                                                Message.class,
+                                                new XC_MethodHook() {
+                                                    @Override
+                                                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                                        // 当Button的Text为允许登录TIM/允许登录QQ的时候才实现点击
+                                                        if (loginButton.getText().toString()
+                                                                .contains(CONTAIN_TEXT)) {
+                                                            if (count == 0) {
+                                                                loginButton.performClick();
                                                             }
+                                                            // 每次都增加
+                                                            count++;
                                                         }
-                                                    });
-                                        } catch (Throwable t) {
-                                            XposedBridge.log(HOOK_ERROR + t);
-                                        }
+                                                    }
+                                                });
+                                    } catch (Throwable t) {
+                                        XposedBridge.log(HOOK_ERROR + t);
                                     }
                                 }
                             }
-                        });
-            } catch (Throwable t) {
-                XposedBridge.log(HOOK_ERROR + t);
-            }
+                        }
+                    });
+        } catch (Throwable t) {
+            XposedBridge.log(HOOK_ERROR + t);
+        }
+    }
+
+    /**
+     * 自动确认微信电脑端登录
+     *
+     * @param lpparam LoadPackageParam
+     */
+    private void autoConfirmWeChatLogin(XC_LoadPackage.LoadPackageParam lpparam) {
+        final Class<?> loginClass = XposedHelpers.findClassIfExists(WECHAT_HOOK_METHOD_NAME, lpparam.classLoader);
+        if (loginClass == null) {
+            return;
+        }
+        try {
+            XposedHelpers.findAndHookConstructor(loginClass, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    final Activity activity = (Activity) param.thisObject;
+                    String versionName = activity.getPackageManager().getPackageInfo(COM_TENCENT_MM, 0).versionName;
+                    XposedHelpers.findAndHookMethod(loginClass, getWeChatHookMethodName(versionName), new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            final Field[] declaredFields = loginClass.getDeclaredFields();
+                            for (Field declaredField : declaredFields) {
+                                declaredField.setAccessible(true);
+                                if (declaredField.getGenericType().toString().contains(ANDROID_WIDGET_BUTTON)) {
+                                    Button loginButton = (Button) declaredField.get(param.thisObject);
+                                    if (WECHAT_LOGIN_TEXT.equals(loginButton.getText().toString())) {
+                                        loginButton.performClick();
+                                        Toast.makeText(activity, AUTO_LOGIN, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        } catch (Throwable t) {
+            XposedBridge.log(HOOK_ERROR + t);
+        }
+    }
+
+    /**
+     * 根据版本号获取需要Hook的方法名
+     * @param versionName 版本号
+     * @return Hook的方法名
+     */
+    private String getWeChatHookMethodName(String versionName) {
+        switch (versionName) {
+            case "6.5.16":
+                return "MH";
+            case "6.5.13":
+                return "KD";
+            case "6.5.10":
+                return "Kg";
+            case "6.5.8":
+                return "ND";
+            case "6.5.7":
+                return "On";
+            case "6.5.4":
+                return "NT";
+            case "6.5.3":
+                return "NI";
+            default:
+                return "MH";
         }
     }
 
     /**
      * 根据包名和版本号获取需要Hook的类名
+     *
      * @param packageName 包名
      * @param versionName 版本号
      * @return 类名
@@ -127,8 +215,10 @@ public class Tutorial implements IXposedHookLoadPackage {
                 return getQQHookName(versionName);
         }
     }
+
     /**
      * 根据版本号获取TIM需要Hook的类名
+     *
      * @param versionName 版本号
      * @return 类名
      */
@@ -155,6 +245,7 @@ public class Tutorial implements IXposedHookLoadPackage {
 
     /**
      * 根据版本号获取QQ需要Hook的类名
+     *
      * @param versionName 版本号
      * @return 类名
      */
