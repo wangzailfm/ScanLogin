@@ -58,7 +58,7 @@ public class Tutorial implements IXposedHookLoadPackage {
     private void autoQQConfirmLogin(final XC_LoadPackage.LoadPackageParam lpparam) {
         // 获取Class
         final Class<?> aClass = XposedHelpers
-                .findClassIfExists(COM_TENCENT_BIZ_QRCODE_ACTIVITY_QRLOGIN_ACTIVITY,
+                .findClassIfExists(QR_CODE_HOOK_CLASS_NAME,
                         lpparam.classLoader);
         if (aClass == null) {
             return;
@@ -140,7 +140,7 @@ public class Tutorial implements IXposedHookLoadPackage {
      * @param lpparam LoadPackageParam
      */
     private void autoConfirmWeChatLogin(XC_LoadPackage.LoadPackageParam lpparam) {
-        final Class<?> loginClass = XposedHelpers.findClassIfExists(WECHAT_HOOK_METHOD_NAME, lpparam.classLoader);
+        final Class<?> loginClass = XposedHelpers.findClassIfExists(WECHAT_HOOK_CLASS_NAME, lpparam.classLoader);
         if (loginClass == null) {
             return;
         }
