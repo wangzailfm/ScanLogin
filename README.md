@@ -2,6 +2,14 @@
 Using Xposed to achieve Automatic confirmation login by scanning QRCode security login to QQ/TIM.
 Supported Automatic confirmation WeChat PC login.
 
+### Sample
+#### TIM
+![AutoLogin](./scanLoginTIM.gif)
+
+#### WeChat
+![autoConfirmLogin](./autoConfirmWeChatLogin.gif)
+
+
 ## QQ
 Supported versions have:
 - 7.0.0
@@ -31,13 +39,6 @@ Supported versions hava:
 - 6.5.4
 - 6.5.3
 
-
-### Sample
-#### TIM
-![AutoLogin](./scanLoginTIM.gif)
-
-#### WeChat
-![autoConfirmLogin](./autoConfirmWeChatLogin.gif)
 
 ## Note
 All apk is download by [coolApk](https://www.coolapk.com/).
