@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="top.jowanxu.scanlogin">
 
@@ -13,7 +14,7 @@
             android:value="true"/>
         <meta-data
             android:name="xposeddescription"
-            android:value="Automatic confirmation login by scanning QRCode security login to QQ/TIM"/>
+            android:value="Automatic confirmation login by scanning QRCode security login to QQ/TIM, and WeChat"/>
         <meta-data
             android:name="xposedminversion"
             android:value="53"/>
