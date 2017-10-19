@@ -96,14 +96,12 @@ class Tutorial : IXposedHookLoadPackage {
      * @param lpParam LoadPackageParam
      */
     private fun autoConfirmWeChatLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
-        loge(TAG, HOOK_ERROR + WECHAT_HOOK_CLASS_NAME)
         // 获取Class
         val loginClass = XposedHelpers.findClassIfExists(WECHAT_HOOK_CLASS_NAME, lpParam.classLoader) ?: return
         // 获取Class里面的Field
         val declaredFields = loginClass.declaredFields ?: return
-        loge(TAG, HOOK_ERROR + "WeChat")
         tryHook {
-            XposedHelpers.findAndHookMethod(loginClass, "onCreate", Bundle::class.java, object : XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(loginClass, ON_CREATE, Bundle::class.java, object : XC_MethodHook() {
                 @Throws(Throwable::class)
                 override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     val activity = param.thisObject as Activity
@@ -112,7 +110,6 @@ class Tutorial : IXposedHookLoadPackage {
                     }.forEach {
                         it.isAccessible = true
                         val loginButton = it.get(param.thisObject) as Button
-                        loge(TAG, HOOK_ERROR + loginButton.text.toString())
                         if (WECHAT_LOGIN_TEXT == loginButton.text.toString()) {
                             loginButton.performClick()
                             Toast.makeText(activity, AUTO_LOGIN, Toast.LENGTH_SHORT).show()
@@ -186,6 +183,7 @@ class Tutorial : IXposedHookLoadPackage {
         private val COM_TENCENT_MM = "com.tencent.mm"
         private val WECHAT_LOGIN_TEXT = "登录"
         private val AUTO_LOGIN = "自动登录成功"
+        private val ON_CREATE = "onCreate"
         private val WECHAT_HOOK_CLASS_NAME = "com.tencent.mm.plugin.webwx.ui.ExtDeviceWXLoginUI"
         private val TAG = Tutorial::class.java.simpleName
 
