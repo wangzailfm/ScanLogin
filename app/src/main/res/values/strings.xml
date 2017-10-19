@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ScanLogin</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="module_loaded_failed">Module loaded failed</string>
+    <string name="module_loaded_success">Module loaded success</string>
 </resources>

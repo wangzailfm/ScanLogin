@@ -6,11 +6,11 @@ import android.os.Message
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
-import de.robv.android.xposed.IXposedHookLoadPackage
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
+import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+
+
+fun loge(tag: String, content: String) = Log.e(tag, content)
 
 /**
  * @author Jowan
@@ -20,12 +20,25 @@ class Tutorial : IXposedHookLoadPackage {
     @Throws(Throwable::class)
     override fun handleLoadPackage(lpParam: XC_LoadPackage.LoadPackageParam) {
         when (lpParam.packageName) {
+            TOP_JOWANXU_SCANLOGIN -> checkModuleLoaded(lpParam)
             COM_TENCENT_MM -> autoConfirmWeChatLogin(lpParam)
             COM_TENCENT_TIM, COM_TENCENT_QQ -> autoConfirmQQLogin(lpParam)
         }
     }
 
-    fun loge(tag: String, content: String) = Log.e(tag, content)
+    /**
+     * 判断模块是否加载成功
+     */
+    private fun checkModuleLoaded(lpParam: XC_LoadPackage.LoadPackageParam) {
+        // 获取Class
+        val activityClass = XposedHelpers.findClassIfExists(TOP_JOWANXU_SCANLOGIN_ACTIVITY, lpParam.classLoader) ?: return
+        tryHook {
+            // 将方法返回值返回为true
+            XposedHelpers.findAndHookMethod(activityClass, HOOK_SCANLOGIN_METHOD_NAME, object : XC_MethodReplacement() {
+                override fun replaceHookedMethod(param: MethodHookParam?): Any = true
+            })
+        }
+    }
 
     fun tryHook(hook: () -> Unit) {
         try {
@@ -171,7 +184,9 @@ class Tutorial : IXposedHookLoadPackage {
     }
 
     companion object {
-
+        private val TOP_JOWANXU_SCANLOGIN = "top.jowanxu.scanlogin"
+        private val TOP_JOWANXU_SCANLOGIN_ACTIVITY = "top.jowanxu.scanlogin.MainActivity"
+        private val HOOK_SCANLOGIN_METHOD_NAME = "isModuleLoaded"
         private val COM_TENCENT_TIM = "com.tencent.tim"
         private val COM_TENCENT_QQ = "com.tencent.mobileqq"
         private val QR_CODE_HOOK_CLASS_NAME = "com.tencent.biz.qrcode.activity.QRLoginActivity"
