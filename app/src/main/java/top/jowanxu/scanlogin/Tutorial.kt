@@ -9,9 +9,6 @@ import android.widget.Toast
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
-
-fun loge(tag: String, content: String) = Log.e(tag, content)
-
 /**
  * @author Jowan
  */
@@ -39,6 +36,8 @@ class Tutorial : IXposedHookLoadPackage {
             })
         }
     }
+
+    fun loge(tag: String, content: String) = Log.e(tag, content)
 
     fun tryHook(hook: () -> Unit) {
         try {
