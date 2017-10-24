@@ -2,12 +2,16 @@ package top.jowanxu.scanlogin
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Environment
 import android.os.Message
-import android.util.Log
 import android.widget.Button
 import android.widget.Toast
-import de.robv.android.xposed.*
+import de.robv.android.xposed.IXposedHookLoadPackage
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XC_MethodReplacement
+import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import java.io.File
 
 /**
  * @author Jowan
@@ -29,21 +33,11 @@ class Tutorial : IXposedHookLoadPackage {
     private fun checkModuleLoaded(lpParam: XC_LoadPackage.LoadPackageParam) {
         // 获取Class
         val activityClass = XposedHelpers.findClassIfExists(TOP_JOWANXU_SCANLOGIN_ACTIVITY, lpParam.classLoader) ?: return
-        tryHook {
+        tryHook(TAG, HOOK_ERROR) {
             // 将方法返回值返回为true
             XposedHelpers.findAndHookMethod(activityClass, HOOK_SCANLOGIN_METHOD_NAME, object : XC_MethodReplacement() {
                 override fun replaceHookedMethod(param: MethodHookParam?): Any = true
             })
-        }
-    }
-
-    fun loge(tag: String, content: String) = Log.e(tag, content)
-
-    fun tryHook(hook: () -> Unit) {
-        try {
-            hook()
-        } catch (t: Throwable) {
-            XposedBridge.log("$HOOK_ERROR$t"); loge(TAG, "$HOOK_ERROR$t")
         }
     }
 
@@ -52,11 +46,20 @@ class Tutorial : IXposedHookLoadPackage {
      * @param lpParam LoadPackageParam
      */
     private fun autoConfirmQQLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
+        // 获取是否需要自动允许
+        val file = File(Environment.getExternalStorageDirectory().path + TIM_QQ_FILE_NAME)
+        var enable = true
+        tryHook(TAG, HOOK_ERROR) {
+            enable = file.readText().toBoolean()
+        }
+        if (!enable) {
+            return
+        }
         // 获取Class
         val aClass = XposedHelpers.findClassIfExists(QR_CODE_HOOK_CLASS_NAME, lpParam.classLoader) ?: return
         // 获取Class里面的Field
         val declaredFields = aClass.declaredFields ?: return
-        tryHook {
+        tryHook(TAG, HOOK_ERROR) {
             // Hook指定方法
             XposedHelpers.findAndHookMethod(aClass, DO_ON_CREATE, Bundle::class.java, object : XC_MethodHook() {
                 @Throws(Throwable::class)
@@ -80,7 +83,7 @@ class Tutorial : IXposedHookLoadPackage {
                         it.isAccessible = true
                         // 获取值
                         val loginButton = it.get(param.thisObject) as Button
-                        tryHook {
+                        tryHook(TAG, HOOK_ERROR) {
                             // Hook方法，对handleMessage方法调用后，进行判断Button的Text进行判断，并且自动调用点击方法
                             XposedHelpers.findAndHookMethod(handlerClass, HANDLE_MESSAGE, Message::class.java, object : XC_MethodHook() {
                                 @Throws(Throwable::class)
@@ -108,11 +111,20 @@ class Tutorial : IXposedHookLoadPackage {
      * @param lpParam LoadPackageParam
      */
     private fun autoConfirmWeChatLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
+        // 获取是否需要自动登录
+        val file = File(Environment.getExternalStorageDirectory().path + WECHAT_FILE_NAME)
+        var enable = true
+        tryHook(TAG, HOOK_ERROR) {
+            enable = file.readText().toBoolean()
+        }
+        if (!enable) {
+            return
+        }
         // 获取Class
         val loginClass = XposedHelpers.findClassIfExists(WECHAT_HOOK_CLASS_NAME, lpParam.classLoader) ?: return
         // 获取Class里面的Field
         val declaredFields = loginClass.declaredFields ?: return
-        tryHook {
+        tryHook(TAG, HOOK_ERROR) {
             XposedHelpers.findAndHookMethod(loginClass, ON_CREATE, Bundle::class.java, object : XC_MethodHook() {
                 @Throws(Throwable::class)
                 override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
@@ -183,23 +195,25 @@ class Tutorial : IXposedHookLoadPackage {
     }
 
     companion object {
-        private val TOP_JOWANXU_SCANLOGIN = "top.jowanxu.scanlogin"
-        private val TOP_JOWANXU_SCANLOGIN_ACTIVITY = "top.jowanxu.scanlogin.MainActivity"
-        private val HOOK_SCANLOGIN_METHOD_NAME = "isModuleLoaded"
-        private val COM_TENCENT_TIM = "com.tencent.tim"
-        private val COM_TENCENT_QQ = "com.tencent.mobileqq"
-        private val QR_CODE_HOOK_CLASS_NAME = "com.tencent.biz.qrcode.activity.QRLoginActivity"
-        private val DO_ON_CREATE = "doOnCreate"
-        private val ANDROID_WIDGET_BUTTON = "android.widget.Button"
-        private val HANDLE_MESSAGE = "handleMessage"
-        private val CONTAIN_TEXT = "允许登录"
-        private val HOOK_ERROR = "Hook 出错 "
-        private val COM_TENCENT_MM = "com.tencent.mm"
-        private val WECHAT_LOGIN_TEXT = "登录"
-        private val AUTO_LOGIN = "自动登录成功"
-        private val ON_CREATE = "onCreate"
-        private val WECHAT_HOOK_CLASS_NAME = "com.tencent.mm.plugin.webwx.ui.ExtDeviceWXLoginUI"
+        private const val TOP_JOWANXU_SCANLOGIN = "top.jowanxu.scanlogin"
+        private const val TOP_JOWANXU_SCANLOGIN_ACTIVITY = "top.jowanxu.scanlogin.MainActivity"
+        private const val HOOK_SCANLOGIN_METHOD_NAME = "isModuleLoaded"
+        private const val COM_TENCENT_TIM = "com.tencent.tim"
+        private const val COM_TENCENT_QQ = "com.tencent.mobileqq"
+        private const val QR_CODE_HOOK_CLASS_NAME = "com.tencent.biz.qrcode.activity.QRLoginActivity"
+        private const val DO_ON_CREATE = "doOnCreate"
+        private const val ANDROID_WIDGET_BUTTON = "android.widget.Button"
+        private const val HANDLE_MESSAGE = "handleMessage"
+        private const val CONTAIN_TEXT = "允许登录"
+        private const val HOOK_ERROR = "Hook 出错 "
+        private const val COM_TENCENT_MM = "com.tencent.mm"
+        private const val WECHAT_LOGIN_TEXT = "登录"
+        private const val AUTO_LOGIN = "自动登录成功"
+        private const val ON_CREATE = "onCreate"
+        private const val WECHAT_HOOK_CLASS_NAME = "com.tencent.mm.plugin.webwx.ui.ExtDeviceWXLoginUI"
         private val TAG = Tutorial::class.java.simpleName
+        private const val WECHAT_FILE_NAME = "/scanLoginWeChat.xml"
+        private const val TIM_QQ_FILE_NAME = "/scanLoginTIMQQ.xml"
 
 
         /**

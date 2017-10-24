@@ -2,4 +2,11 @@
     <string name="app_name">ScanLogin</string>
     <string name="module_loaded_failed">Module loaded failed</string>
     <string name="module_loaded_success">Module loaded success</string>
+    <string name="module_status">模块状态</string>
+    <string name="module_setting_title">功能选项，需重启相应App</string>
+    <string name="module_setting_second"><![CDATA[(设置->应用->TIM/QQ/微信->强行停止)]]></string>
+    <string name="module_setting_wechat">微信确认登录</string>
+    <string name="module_setting_qq_tim">QQ/TIM允许登录</string>
+    <string name="restart_qq_tim">设置成功，重启QQ/TIM后生效</string>
+    <string name="restart_wechat">设置成功，重启微信后生效</string>
 </resources>
