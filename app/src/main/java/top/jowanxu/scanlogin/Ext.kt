@@ -6,13 +6,23 @@ import java.io.File
 import java.nio.charset.Charset
 
 
-fun loge(tag: String, content: String) = Log.e(tag, content)
+fun String.loge(content: String) = Log.e(this, content)
 
 inline fun tryHook(tag: String, content: String, hook: () -> Unit) {
     try {
         hook()
     } catch (t: Throwable) {
-        XposedBridge.log(content + t); loge(tag, content + t)
+        XposedBridge.log(content + t); tag.loge(content + t)
+    }
+}
+
+fun tryHook(tag: String, content: String, hook: () -> Unit, error: () -> Unit) {
+    try {
+        hook()
+    } catch (t: Throwable) {
+        error()
+        XposedBridge.log(content + t)
+        tag.loge(content + t)
     }
 }
 

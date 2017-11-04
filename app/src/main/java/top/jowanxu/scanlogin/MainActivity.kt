@@ -22,10 +22,19 @@ class MainActivity : Activity(), CompoundButton.OnCheckedChangeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        this.packageManager.setComponentEnabledSetting(ComponentName(this.packageName, this.packageName + MAIN_ACTIVITY), COMPONENT_ENABLED_STATE_DISABLED, DONT_KILL_APP)
+        sharedPreferences = getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE)
+        if (sharedPreferences.getBoolean(ICON_VISIBILITY_KEY, false)) {
+            tryHook(TAG, ICON_VISIBILITY_ERROR, {
+                this.packageManager.setComponentEnabledSetting(ComponentName(this.packageName,
+                        this.packageName + MAIN_ACTIVITY), COMPONENT_ENABLED_STATE_DISABLED, DONT_KILL_APP)
+                sharedPreferences.edit().putBoolean(ICON_VISIBILITY_KEY, true).apply()
+            }, {
+                sharedPreferences.edit().putBoolean(ICON_VISIBILITY_KEY, false).apply()
+            })
+
+        }
         if (isModuleLoaded()) {
             initFile()
-            sharedPreferences = getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE)
             val text: TextView = findViewById(R.id.moduleStatus) as TextView
             text.text = getString(R.string.module_loaded_success)
             val weChat: Switch = findViewById(R.id.weCht) as Switch
@@ -91,6 +100,8 @@ class MainActivity : Activity(), CompoundButton.OnCheckedChangeListener {
         private val timQQFilePath = Environment.getExternalStorageDirectory().path + "/scanLoginTIMQQ.xml"
         private const val SHARED_NAME = "scanLogin"
         private const val MAIN_ACTIVITY = ".MainActivityAlias"
+        private const val ICON_VISIBILITY_KEY = "iconVisibility"
+        private const val ICON_VISIBILITY_ERROR = "iconVisibilityError "
         private const val KEY_WECHAT = "weChat"
         private const val KEY_TIM_QQ = "timQQ"
         private const val WRITE_FILE_ERROR = "writeFileError "

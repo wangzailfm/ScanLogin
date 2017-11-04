@@ -73,7 +73,7 @@ class Tutorial : IXposedHookLoadPackage {
                         count = 0
                     }
                     val activity = param.thisObject as Activity
-                    val resultStr = getHookName(lpParam.packageName,
+                    val resultStr = lpParam.packageName.getHookName(
                             activity.packageManager.getPackageInfo(lpParam.packageName, 0).versionName)
                     declaredFields.filter {
                         it.genericType.toString().contains(ANDROID_WIDGET_BUTTON)
@@ -134,7 +134,11 @@ class Tutorial : IXposedHookLoadPackage {
                     }.forEach {
                         it.isAccessible = true
                         val loginButton = it.get(param.thisObject) as Button
-                        if (WECHAT_LOGIN_TEXT == loginButton.text.toString()) {
+                        val loginButtonText = loginButton.text.toString()
+                        if (WECHAT_LOGIN_TEXT == loginButtonText
+                                || WECHAT_LOGIN_TEXT_CF == loginButtonText
+                                || WECHAT_LOGIN_TEXT_EN == loginButtonText
+                                || WECHAT_LOGIN_TEXT_JP == loginButtonText) {
                             loginButton.performClick()
                             Toast.makeText(activity, AUTO_LOGIN, Toast.LENGTH_SHORT).show()
                         }
@@ -154,7 +158,7 @@ class Tutorial : IXposedHookLoadPackage {
      * *
      * @return 类名
      */
-    private fun getHookName(packageName: String, versionName: String): String = when (packageName) {
+    private fun String.getHookName(versionName: String): String = when (this) {
         COM_TENCENT_TIM -> getTIMHookName(versionName)
         COM_TENCENT_QQ -> getQQHookName(versionName)
         else -> getQQHookName(versionName)
@@ -168,6 +172,7 @@ class Tutorial : IXposedHookLoadPackage {
      * @return 类名
      */
     private fun getTIMHookName(versionName: String): String = when (versionName) {
+        "2.0.1" -> "hxr"
         "2.0.0" -> "hxq"
         "1.2.0" -> "hzq"
         "1.1.5" -> "ghk"
@@ -209,6 +214,9 @@ class Tutorial : IXposedHookLoadPackage {
         private const val HOOK_ERROR = "Hook 出错 "
         private const val COM_TENCENT_MM = "com.tencent.mm"
         private const val WECHAT_LOGIN_TEXT = "登录"
+        private const val WECHAT_LOGIN_TEXT_CF = "登入"
+        private const val WECHAT_LOGIN_TEXT_EN = "Enter"
+        private const val WECHAT_LOGIN_TEXT_JP = "入力"
         private const val AUTO_LOGIN = "自动登录成功"
         private const val ON_CREATE = "onCreate"
         private const val WECHAT_HOOK_CLASS_NAME = "com.tencent.mm.plugin.webwx.ui.ExtDeviceWXLoginUI"
