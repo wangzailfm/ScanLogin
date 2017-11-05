@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Message
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
-import de.robv.android.xposed.IXposedHookLoadPackage
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XC_MethodReplacement
-import de.robv.android.xposed.XposedHelpers
+import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import java.io.File
 
@@ -24,6 +22,7 @@ class Tutorial : IXposedHookLoadPackage {
             TOP_JOWANXU_SCANLOGIN -> checkModuleLoaded(lpParam)
             COM_TENCENT_MM -> autoConfirmWeChatLogin(lpParam)
             COM_TENCENT_TIM, COM_TENCENT_QQ -> autoConfirmQQLogin(lpParam)
+            WEICO_PACKAGE_NAME -> autoConfirmWeicoLogin(lpParam)
         }
     }
 
@@ -37,6 +36,37 @@ class Tutorial : IXposedHookLoadPackage {
             // 将方法返回值返回为true
             XposedHelpers.findAndHookMethod(activityClass, HOOK_SCANLOGIN_METHOD_NAME, object : XC_MethodReplacement() {
                 override fun replaceHookedMethod(param: MethodHookParam?): Any = true
+            })
+        }
+    }
+
+    /**
+     * Weico
+     * @param lpParam LoadPackageParam
+     */
+    private fun autoConfirmWeicoLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
+        // 获取Class
+        val loginClass = XposedHelpers.findClassIfExists(QR_CODE_HOOK_WEICO_CLASS_NAME, lpParam.classLoader) ?: return
+        // 获取Class里面的Field
+        val declaredFields = loginClass.declaredFields ?: return
+        tryHook(TAG, HOOK_ERROR) {
+            XposedHelpers.findAndHookMethod(loginClass, "scanCodeSuccess", object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    Thread.sleep(500)
+                    val activity = param.thisObject as Activity
+                    declaredFields.filter {
+                        it.genericType.toString().contains("android.widget.TextView")
+                    }.forEach {
+                        it.isAccessible = true
+                        val loginButton = it.get(param.thisObject) as TextView
+                        val loginButtonText = loginButton.text.toString()
+                        if (loginButtonText == "确认登录") {
+                            XposedHelpers.callMethod(param.thisObject, "onClick")
+                            Toast.makeText(activity, AUTO_LOGIN, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             })
         }
     }
@@ -223,6 +253,8 @@ class Tutorial : IXposedHookLoadPackage {
         private val TAG = Tutorial::class.java.simpleName
         private const val WECHAT_FILE_NAME = "/scanLoginWeChat.xml"
         private const val TIM_QQ_FILE_NAME = "/scanLoginTIMQQ.xml"
+        private const val WEICO_PACKAGE_NAME = "com.weico.international"
+        private const val QR_CODE_HOOK_WEICO_CLASS_NAME = "com.weico.international.activity.scan.ScanWebSureLoginActivity"
 
 
         /**
