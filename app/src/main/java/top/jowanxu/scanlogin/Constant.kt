@@ -26,4 +26,12 @@ object Constant {
     const val WEICO_LOGIN_TEXT = "确认登录"
     const val WEICO_LOGIN_TEXT_EN = "Sign in"
     const val WEICO_LOGIN_TEXT_CF = "確認登錄"
+
+    const val PREFERENCE_BOOLEAN = "content://top.jowanxu.scanlogin.provider/boolean"
+    const val AUTHORITY = "top.jowanxu.scanlogin.provider"
+    const val BOOLEAN_PATH = "boolean"
+    const val BOOLEAN_CODE = 0
+    const val TIM_QQ_ENABLE = "timQQ"
+    const val WECHAT_ENABLE = "weChat"
+    const val WEICO_ENABLE = "weico"
 }

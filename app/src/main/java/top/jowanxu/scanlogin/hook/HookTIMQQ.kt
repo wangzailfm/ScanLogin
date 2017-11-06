@@ -2,7 +2,6 @@ package top.jowanxu.scanlogin.hook
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.Environment
 import android.os.Message
 import android.widget.Button
 import de.robv.android.xposed.XC_MethodHook
@@ -14,9 +13,8 @@ import top.jowanxu.scanlogin.Constant.COM_TENCENT_QQ
 import top.jowanxu.scanlogin.Constant.COM_TENCENT_TIM
 import top.jowanxu.scanlogin.Constant.CONTAIN_TEXT
 import top.jowanxu.scanlogin.Constant.HANDLE_MESSAGE
+import top.jowanxu.scanlogin.getPreferenceBoolean
 import top.jowanxu.scanlogin.tryHook
-import top.jowanxu.scanlogin.tryHookException
-import java.io.File
 
 class HookTIMQQ {
     companion object {
@@ -36,15 +34,6 @@ class HookTIMQQ {
      * @param lpParam LoadPackageParam
      */
     fun autoConfirmQQLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
-        // 获取是否需要自动允许
-        val file = File(Environment.getExternalStorageDirectory().path + TIM_QQ_FILE_NAME)
-        var enable = true
-        tryHookException(TAG, Constant.HOOK_ERROR) {
-            enable = file.readText().toBoolean()
-        }
-        if (!enable) {
-            return
-        }
         // 获取Class
         val aClass = XposedHelpers.findClassIfExists(QR_CODE_HOOK_CLASS_NAME, lpParam.classLoader) ?: return
         // 获取Class里面的Field
@@ -63,6 +52,12 @@ class HookTIMQQ {
                         count = 0
                     }
                     val activity = param.thisObject as Activity
+                    val enable = getPreferenceBoolean(activity,
+                            Constant.PREFERENCE_BOOLEAN,
+                            Constant.TIM_QQ_ENABLE, true)
+                    if (!enable) {
+                        return
+                    }
                     val resultStr = lpParam.packageName.getHookName(
                             activity.packageManager.getPackageInfo(lpParam.packageName, 0).versionName)
                     declaredFields.filter {

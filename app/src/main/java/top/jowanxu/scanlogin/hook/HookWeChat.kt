@@ -2,7 +2,6 @@ package top.jowanxu.scanlogin.hook
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.Environment
 import android.widget.Button
 import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
@@ -14,14 +13,12 @@ import top.jowanxu.scanlogin.Constant.WECHAT_LOGIN_TEXT
 import top.jowanxu.scanlogin.Constant.WECHAT_LOGIN_TEXT_CF
 import top.jowanxu.scanlogin.Constant.WECHAT_LOGIN_TEXT_EN
 import top.jowanxu.scanlogin.Constant.WECHAT_LOGIN_TEXT_JP
+import top.jowanxu.scanlogin.getPreferenceBoolean
 import top.jowanxu.scanlogin.tryHook
-import top.jowanxu.scanlogin.tryHookException
-import java.io.File
 
 class HookWeChat {
     companion object {
         private const val WECHAT_HOOK_CLASS_NAME = "com.tencent.mm.plugin.webwx.ui.ExtDeviceWXLoginUI"
-        private const val WECHAT_FILE_NAME = "/scanLoginWeChat.xml"
         private val TAG = HookWeChat::class.java.simpleName
     }
 
@@ -31,15 +28,6 @@ class HookWeChat {
      * @param lpParam LoadPackageParam
      */
     fun autoConfirmWeChatLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
-        // 获取是否需要自动登录
-        val file = File(Environment.getExternalStorageDirectory().path + WECHAT_FILE_NAME)
-        var enable = true
-        tryHookException(TAG, Constant.HOOK_ERROR) {
-            enable = file.readText().toBoolean()
-        }
-        if (!enable) {
-            return
-        }
         // 获取Class
         val loginClass = XposedHelpers.findClassIfExists(WECHAT_HOOK_CLASS_NAME, lpParam.classLoader) ?: return
         // 获取Class里面的Field
@@ -49,6 +37,12 @@ class HookWeChat {
                 @Throws(Throwable::class)
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val activity = param.thisObject as Activity
+                    val enable = getPreferenceBoolean(activity,
+                            Constant.PREFERENCE_BOOLEAN,
+                            Constant.WECHAT_ENABLE, true)
+                    if (!enable) {
+                        return
+                    }
                     declaredFields.filter {
                         it.genericType.toString().contains(Constant.ANDROID_WIDGET_BUTTON)
                     }.forEach {
