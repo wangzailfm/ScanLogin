@@ -15,6 +15,8 @@ import android.widget.Toast
 import java.io.File
 
 class MainActivity : Activity(), CompoundButton.OnCheckedChangeListener {
+    private lateinit var weChatFilePath: String
+    private lateinit var timQQFilePath: String
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var thread: MyThread
@@ -24,7 +26,7 @@ class MainActivity : Activity(), CompoundButton.OnCheckedChangeListener {
         setContentView(R.layout.activity_main)
         sharedPreferences = getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE)
         if (sharedPreferences.getBoolean(ICON_VISIBILITY_KEY, false)) {
-            tryHook(TAG, ICON_VISIBILITY_ERROR, {
+            tryHookException(TAG, ICON_VISIBILITY_ERROR, {
                 this.packageManager.setComponentEnabledSetting(ComponentName(this.packageName,
                         this.packageName + MAIN_ACTIVITY), COMPONENT_ENABLED_STATE_DISABLED, DONT_KILL_APP)
                 sharedPreferences.edit().putBoolean(ICON_VISIBILITY_KEY, true).apply()
@@ -72,6 +74,8 @@ class MainActivity : Activity(), CompoundButton.OnCheckedChangeListener {
      * 初始化文件操作
      */
     private fun initFile() {
+        weChatFilePath = Environment.getExternalStorageDirectory().path + "/scanLoginWeChat.xml"
+        timQQFilePath = Environment.getExternalStorageDirectory().path + "/scanLoginTIMQQ.xml"
         thread = MyThread(TAG, WRITE_FILE_ERROR)
         thread.start()
         if (!File(weChatFilePath).exists()) {
@@ -91,13 +95,13 @@ class MainActivity : Activity(), CompoundButton.OnCheckedChangeListener {
      *  写入文件
      */
     private fun writeFile(filePath: String, content: String) {
-        thread.resumeThread(filePath, content)
+        tryHookException(TAG, WRITE_FILE_ERROR) {
+            thread.resumeThread(filePath, content)
+        }
     }
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
-        private val weChatFilePath = Environment.getExternalStorageDirectory().path + "/scanLoginWeChat.xml"
-        private val timQQFilePath = Environment.getExternalStorageDirectory().path + "/scanLoginTIMQQ.xml"
         private const val SHARED_NAME = "scanLogin"
         private const val MAIN_ACTIVITY = ".MainActivityAlias"
         private const val ICON_VISIBILITY_KEY = "iconVisibility"
