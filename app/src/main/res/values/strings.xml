@@ -5,6 +5,7 @@
     <string name="module_status">模块状态</string>
     <string name="module_setting_title">功能选项，需重启相应App</string>
     <string name="module_setting_second"><![CDATA[(设置->应用->TIM/QQ/微信->强行停止)]]></string>
+    <string name="module_setting_icon">是否显示图标</string>
     <string name="module_setting_wechat">微信确认登录</string>
     <string name="module_setting_qq_tim">QQ/TIM允许登录</string>
     <string name="module_setting_weico">微博国际版确认登录</string>

@@ -41,7 +41,14 @@
         android:textStyle="bold"/>
 
     <Switch
-        android:id="@+id/weCht"
+        android:id="@+id/iconVisibility"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/module_setting_icon"/>
+
+    <Switch
+        android:id="@+id/weChat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"

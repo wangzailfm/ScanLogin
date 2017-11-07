@@ -8,8 +8,14 @@ import android.util.Log
 import de.robv.android.xposed.XposedBridge
 
 
+/**
+ * 打印日志
+ */
 fun String.loge(content: String) = Log.e(this, content)
 
+/**
+ * try catch
+ */
 inline fun tryHook(tag: String, content: String, hook: () -> Unit) {
     try {
         hook()
@@ -18,6 +24,9 @@ inline fun tryHook(tag: String, content: String, hook: () -> Unit) {
     }
 }
 
+/**
+ * try catch
+ */
 inline fun tryHookException(tag: String, content: String, hook: () -> Unit, error: () -> Unit) {
     try {
         hook()
@@ -28,6 +37,9 @@ inline fun tryHookException(tag: String, content: String, hook: () -> Unit, erro
     }
 }
 
+/**
+ * 获取SharedPreference里面的boolean类型值
+ */
 fun getPreferenceBoolean(context: Context,uriString: String, key: String, defValue: Boolean): Boolean {
 
     return getPreferenceValue(context, uriString, key, defValue) {
@@ -36,7 +48,10 @@ fun getPreferenceBoolean(context: Context,uriString: String, key: String, defVal
     }
 }
 
-fun <T> getPreferenceValue(context: Context,
+/**
+ * 获取SharedPreference里面的值
+ */
+inline fun <T> getPreferenceValue(context: Context,
         uriString: String, key: String, defValue: T, handler: (cursor: Cursor) -> T): T {
 
     var cursor: Cursor? = null
@@ -45,8 +60,10 @@ fun <T> getPreferenceValue(context: Context,
         cursor = context.contentResolver.query(
                 Uri.parse(uriString), null,
                 key, null, null)
-        if (cursor != null && cursor.moveToFirst()) {
-            return handler(cursor)
+        cursor?.let {
+            if (it.moveToFirst()) {
+                return handler(it)
+            }
         }
     } catch (t: Throwable) {
         XposedBridge.log("getPreferenceValueError------$t")

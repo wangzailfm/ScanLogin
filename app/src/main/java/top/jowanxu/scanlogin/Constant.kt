@@ -31,6 +31,7 @@ object Constant {
     const val AUTHORITY = "top.jowanxu.scanlogin.provider"
     const val BOOLEAN_PATH = "boolean"
     const val BOOLEAN_CODE = 0
+    const val ICON_ENABLE = "iconVisibility"
     const val TIM_QQ_ENABLE = "timQQ"
     const val WECHAT_ENABLE = "weChat"
     const val WEICO_ENABLE = "weico"

@@ -19,7 +19,6 @@ import top.jowanxu.scanlogin.tryHook
 class HookTIMQQ {
     companion object {
         private val TAG = HookTIMQQ::class.java.simpleName
-        private const val TIM_QQ_FILE_NAME = "/scanLoginTIMQQ.xml"
         private const val QR_CODE_HOOK_CLASS_NAME = "com.tencent.biz.qrcode.activity.QRLoginActivity"
         private const val DO_ON_CREATE = "doOnCreate"
 
