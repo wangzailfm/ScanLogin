@@ -27,6 +27,7 @@ object Constant {
     const val WEICO_LOGIN_TEXT_EN = "Sign in"
     const val WEICO_LOGIN_TEXT_CF = "確認登錄"
 
+    const val SHARED_NAME = "_preferences"
     const val PREFERENCE_BOOLEAN = "content://top.jowanxu.scanlogin.provider/boolean"
     const val AUTHORITY = "top.jowanxu.scanlogin.provider"
     const val BOOLEAN_PATH = "boolean"
