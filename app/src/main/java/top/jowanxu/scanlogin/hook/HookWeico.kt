@@ -46,7 +46,7 @@ class HookWeico {
                     }
                     Thread.sleep(500)
                     declaredFields.filter {
-                        it.genericType.toString().contains(ANDROID_WIDGET_TEXTVIEW)
+                        it.type.canonicalName.toString() == (ANDROID_WIDGET_TEXTVIEW)
                     }.forEach {
                         it.isAccessible = true
                         val loginButton = it.get(param.thisObject) as TextView

@@ -60,7 +60,7 @@ class HookTIMQQ {
                     val resultStr = lpParam.packageName.getHookName(
                             activity.packageManager.getPackageInfo(lpParam.packageName, 0).versionName)
                     declaredFields.filter {
-                        it.genericType.toString().contains(ANDROID_WIDGET_BUTTON)
+                        it.type.canonicalName.toString() == (ANDROID_WIDGET_BUTTON)
                     }.forEach {
                         val handlerClass = XposedHelpers.findClassIfExists(resultStr, lpParam.classLoader) ?: return
                         // 设置true
