@@ -18,13 +18,15 @@ import top.jowanxu.scanlogin.hook.HookWeico
 class Tutorial : IXposedHookLoadPackage {
 
     @Throws(Throwable::class)
-    override fun handleLoadPackage(lpParam: XC_LoadPackage.LoadPackageParam) {
-        when (lpParam.packageName) {
-            TOP_JOWANXU_SCANLOGIN -> HookScanLogin().checkModuleLoaded(lpParam)
-            COM_TENCENT_MM -> HookWeChat().autoConfirmWeChatLogin(lpParam)
-            COM_TENCENT_TIM, COM_TENCENT_QQ -> HookTIMQQ().autoConfirmQQLogin(lpParam)
-            WEICO_PACKAGE_NAME -> HookWeico().autoConfirmWeicoLogin(lpParam)
-        }
-    }
-
+    override fun handleLoadPackage(lpParam: XC_LoadPackage.LoadPackageParam) =
+            when (lpParam.packageName) {
+                TOP_JOWANXU_SCANLOGIN -> HookScanLogin().checkModuleLoaded(lpParam)
+                COM_TENCENT_MM -> HookWeChat().autoConfirmWeChatLogin(lpParam)
+                COM_TENCENT_TIM, COM_TENCENT_QQ -> HookTIMQQ().autoConfirmQQLogin(lpParam)
+                WEICO_PACKAGE_NAME -> {
+                    HookWeico().autoConfirmWeicoLogin(lpParam)
+                    HookWeico().removeWeicoStartAD(lpParam)
+                }
+                else -> {}
+            }
 }

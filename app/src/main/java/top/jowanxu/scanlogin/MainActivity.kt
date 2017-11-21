@@ -12,10 +12,10 @@ import android.widget.Toast
 import top.jowanxu.scanlogin.provider.Preference
 
 class MainActivity : Activity() {
-    var iconEnable: Boolean by Preference(this, Constant.ICON_ENABLE, true)
-    var weChatEnable: Boolean by Preference(this, Constant.WECHAT_ENABLE, true)
-    var timQQEnable: Boolean by Preference(this, Constant.TIM_QQ_ENABLE, true)
-    var weicoEnable: Boolean by Preference(this, Constant.WEICO_ENABLE, true)
+    private var iconEnable: Boolean by Preference(this, Constant.ICON_ENABLE, true)
+    private var weChatEnable: Boolean by Preference(this, Constant.WECHAT_ENABLE, true)
+    private var timQQEnable: Boolean by Preference(this, Constant.TIM_QQ_ENABLE, true)
+    private var weicoEnable: Boolean by Preference(this, Constant.WEICO_ENABLE, true)
 
     // SAM
     private val onCheckedChangeListener = OnCheckedChangeListener {
