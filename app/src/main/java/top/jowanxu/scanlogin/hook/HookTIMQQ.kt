@@ -120,7 +120,7 @@ class HookTIMQQ {
         "1.0.5" -> "gjd"
         "1.0.4" -> "gir"
         "1.0.0" -> "gik"
-        else -> "hzq"
+        else -> "hxr"
     }
 
     /**
@@ -137,7 +137,7 @@ class HookTIMQQ {
         "7.1.5" -> "mcf"
         "7.1.0" -> "lri"
         "7.0.0" -> "lhi"
-        else -> "myi"
+        else -> "nea"
     }
 
 }
