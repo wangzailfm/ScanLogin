@@ -5,60 +5,27 @@ import android.content.ComponentName
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED
 import android.content.pm.PackageManager.DONT_KILL_APP
 import android.os.Bundle
-import android.widget.CompoundButton
+import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import top.jowanxu.scanlogin.provider.Preference
 
-class MainActivity : Activity(), CompoundButton.OnCheckedChangeListener {
+class MainActivity : Activity() {
     var iconEnable: Boolean by Preference(this, Constant.ICON_ENABLE, true)
     var weChatEnable: Boolean by Preference(this, Constant.WECHAT_ENABLE, true)
     var timQQEnable: Boolean by Preference(this, Constant.TIM_QQ_ENABLE, true)
     var weicoEnable: Boolean by Preference(this, Constant.WEICO_ENABLE, true)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        tryHook(TAG, ICON_VISIBILITY_ERROR) {
-            this.packageManager.setComponentEnabledSetting(ComponentName(this.packageName,
-                    this.packageName + MAIN_ACTIVITY),
-                    if (iconEnable)
-                        COMPONENT_ENABLED_STATE_DISABLED
-                    else
-                        COMPONENT_ENABLED_STATE_DISABLED,
-                    DONT_KILL_APP)
-        }
-        if (isModuleLoaded()) {
-            val text: TextView = findViewById(R.id.moduleStatus) as TextView
-            text.text = getString(R.string.module_loaded_success)
-            val icon: Switch = findViewById(R.id.iconVisibility) as Switch
-            icon.isChecked = iconEnable
-            icon.setOnCheckedChangeListener(this)
-            val weChat: Switch = findViewById(R.id.weChat) as Switch
-            weChat.isChecked = weChatEnable
-            weChat.setOnCheckedChangeListener(this)
-            val timQQ: Switch = findViewById(R.id.timQQ) as Switch
-            timQQ.isChecked = timQQEnable
-            timQQ.setOnCheckedChangeListener(this)
-            val weico: Switch = findViewById(R.id.weico) as Switch
-            weico.isChecked = weicoEnable
-            weico.setOnCheckedChangeListener(this)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        finish()
-    }
-
-    override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+    // SAM
+    private val onCheckedChangeListener = OnCheckedChangeListener {
+        buttonView, isChecked ->
         when (buttonView.id) {
             R.id.iconVisibility -> {
                 iconEnable = isChecked
                 tryHook(TAG, ICON_VISIBILITY_ERROR) {
-                    this.packageManager.setComponentEnabledSetting(ComponentName(this.packageName,
-                            this.packageName + MAIN_ACTIVITY),
+                    this.packageManager.setComponentEnabledSetting(
+                            ComponentName(this.packageName, this.packageName + MAIN_ACTIVITY),
                             if (isChecked) COMPONENT_ENABLED_STATE_DISABLED else COMPONENT_ENABLED_STATE_DISABLED,
                             DONT_KILL_APP)
                 }
@@ -77,6 +44,42 @@ class MainActivity : Activity(), CompoundButton.OnCheckedChangeListener {
             }
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        tryHook(TAG, ICON_VISIBILITY_ERROR) {
+            this.packageManager.setComponentEnabledSetting(ComponentName(this.packageName,
+                    this.packageName + MAIN_ACTIVITY),
+                    if (iconEnable)
+                        COMPONENT_ENABLED_STATE_DISABLED
+                    else
+                        COMPONENT_ENABLED_STATE_DISABLED,
+                    DONT_KILL_APP)
+        }
+        if (isModuleLoaded()) {
+            val text: TextView = findViewById(R.id.moduleStatus) as TextView
+            text.text = getString(R.string.module_loaded_success)
+            val icon: Switch = findViewById(R.id.iconVisibility) as Switch
+            icon.isChecked = iconEnable
+            icon.setOnCheckedChangeListener(onCheckedChangeListener)
+            val weChat: Switch = findViewById(R.id.weChat) as Switch
+            weChat.isChecked = weChatEnable
+            weChat.setOnCheckedChangeListener(onCheckedChangeListener)
+            val timQQ: Switch = findViewById(R.id.timQQ) as Switch
+            timQQ.isChecked = timQQEnable
+            timQQ.setOnCheckedChangeListener(onCheckedChangeListener)
+            val weico: Switch = findViewById(R.id.weico) as Switch
+            weico.isChecked = weicoEnable
+            weico.setOnCheckedChangeListener(onCheckedChangeListener)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        finish()
+    }
+
     /**
      * 用于判断模块是否加载成功，通过自己Hook自己
      */
