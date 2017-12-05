@@ -131,13 +131,14 @@ class HookTIMQQ {
      * @return 类名
      */
     private fun getQQHookName(versionName: String): String = when (versionName) {
+        "7.3.0" -> "nse"
         "7.2.5" -> "nea"
         "7.2.0" -> "myi"
         "7.1.8" -> "mco"
         "7.1.5" -> "mcf"
         "7.1.0" -> "lri"
         "7.0.0" -> "lhi"
-        else -> "nea"
+        else -> "nse"
     }
 
 }
