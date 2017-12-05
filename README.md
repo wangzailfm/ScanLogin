@@ -22,6 +22,7 @@ Supported versions have:
 - 7.1.8
 - 7.2.0
 - 7.2.5
+- 7.3.0
 
 
 ## TIM
