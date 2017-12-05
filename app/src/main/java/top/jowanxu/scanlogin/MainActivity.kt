@@ -2,8 +2,7 @@ package top.jowanxu.scanlogin
 
 import android.app.Activity
 import android.content.ComponentName
-import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-import android.content.pm.PackageManager.DONT_KILL_APP
+import android.content.pm.PackageManager.*
 import android.os.Bundle
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Switch
@@ -26,7 +25,7 @@ class MainActivity : Activity() {
                 tryHook(TAG, ICON_VISIBILITY_ERROR) {
                     this.packageManager.setComponentEnabledSetting(
                             ComponentName(this.packageName, this.packageName + MAIN_ACTIVITY),
-                            if (isChecked) COMPONENT_ENABLED_STATE_DISABLED else COMPONENT_ENABLED_STATE_DISABLED,
+                            if (isChecked) COMPONENT_ENABLED_STATE_ENABLED else COMPONENT_ENABLED_STATE_DISABLED,
                             DONT_KILL_APP)
                 }
             }
@@ -52,7 +51,7 @@ class MainActivity : Activity() {
             this.packageManager.setComponentEnabledSetting(ComponentName(this.packageName,
                     this.packageName + MAIN_ACTIVITY),
                     if (iconEnable)
-                        COMPONENT_ENABLED_STATE_DISABLED
+                        COMPONENT_ENABLED_STATE_ENABLED
                     else
                         COMPONENT_ENABLED_STATE_DISABLED,
                     DONT_KILL_APP)

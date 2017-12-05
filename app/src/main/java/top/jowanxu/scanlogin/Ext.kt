@@ -6,6 +6,8 @@ import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import de.robv.android.xposed.XposedBridge
+import kotlin.coroutines.experimental.Continuation
+import kotlin.coroutines.experimental.suspendCoroutine
 
 
 /**
@@ -27,13 +29,13 @@ inline fun tryHook(tag: String, content: String, hook: () -> Unit) {
 /**
  * try catch
  */
-inline fun tryHookException(tag: String, content: String, hook: () -> Unit, error: () -> Unit) {
+inline fun tryHookException(tag: String, content: String, hook: () -> Unit, error: (Throwable) -> Unit) {
     try {
         hook()
-    } catch (e: Exception) {
-        error()
-        XposedBridge.log(content + e.message)
-        tag.loge(content + e.message)
+    } catch (t: Throwable) {
+        error(t)
+        XposedBridge.log(content + t)
+        tag.loge(content + t)
     }
 }
 
@@ -71,4 +73,11 @@ inline fun <T> getPreferenceValue(context: Context,
         cursor?.close()
     }
     return defValue
+}
+
+/**
+ * 异步操作
+ */
+suspend fun <T> asyncRequestSuspend(block: (Continuation<T>) -> Unit) = suspendCoroutine<T> {
+    block(it)
 }
