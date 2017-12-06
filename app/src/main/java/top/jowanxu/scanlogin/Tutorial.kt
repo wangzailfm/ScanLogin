@@ -22,11 +22,15 @@ class Tutorial : IXposedHookLoadPackage {
             when (lpParam.packageName) {
                 TOP_JOWANXU_SCANLOGIN -> HookScanLogin().checkModuleLoaded(lpParam)
                 COM_TENCENT_MM -> HookWeChat().autoConfirmWeChatLogin(lpParam)
-                COM_TENCENT_TIM, COM_TENCENT_QQ -> HookTIMQQ().autoConfirmQQLogin(lpParam)
-                WEICO_PACKAGE_NAME -> {
-                    HookWeico().autoConfirmWeicoLogin(lpParam)
-                    HookWeico().removeWeicoStartAD(lpParam)
+                COM_TENCENT_TIM, COM_TENCENT_QQ -> HookTIMQQ().run {
+                    autoConfirmQQLogin(lpParam)
+                    autoWebConfirmQQLogin(lpParam)
                 }
-                else -> {}
+                WEICO_PACKAGE_NAME -> HookWeico().run {
+                    autoConfirmWeicoLogin(lpParam)
+                    removeWeicoStartAD(lpParam)
+                }
+                else -> {
+                }
             }
 }
