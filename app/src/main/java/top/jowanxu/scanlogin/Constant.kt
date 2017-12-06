@@ -11,6 +11,7 @@ object Constant {
     const val ANDROID_WIDGET_BUTTON = "android.widget.Button"
     const val ANDROID_WIDGET_TEXTVIEW = "android.widget.TextView"
     const val ON_CREATE = "onCreate"
+    const val DO_ON_CREATE = "doOnCreate"
     const val ON_CLICK = "onClick"
     const val HANDLE_MESSAGE = "handleMessage"
 

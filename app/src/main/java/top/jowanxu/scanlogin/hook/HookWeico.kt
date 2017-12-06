@@ -8,9 +8,6 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import top.jowanxu.scanlogin.Constant
 import top.jowanxu.scanlogin.Constant.ANDROID_WIDGET_TEXTVIEW
-import top.jowanxu.scanlogin.Constant.AUTO_LOGIN
-import top.jowanxu.scanlogin.Constant.HOOK_ERROR
-import top.jowanxu.scanlogin.Constant.ON_CLICK
 import top.jowanxu.scanlogin.Constant.WEICO_LOGIN_TEXT
 import top.jowanxu.scanlogin.Constant.WEICO_LOGIN_TEXT_CF
 import top.jowanxu.scanlogin.Constant.WEICO_LOGIN_TEXT_EN
@@ -38,7 +35,7 @@ class HookWeico {
         val loginClass = XposedHelpers.findClassIfExists(QR_CODE_HOOK_WEICO_CLASS_NAME, lpParam.classLoader) ?: return
         // 获取Class里面的Field
         val declaredFields = loginClass.declaredFields ?: return
-        tryHook(TAG, HOOK_ERROR) {
+        tryHook(TAG, Constant.HOOK_ERROR) {
             XposedHelpers.findAndHookMethod(loginClass, WEICO_HOOK_METHOD_NAME, object : XC_MethodHook() {
                 @Throws(Throwable::class)
                 override fun afterHookedMethod(param: MethodHookParam) {
@@ -60,8 +57,8 @@ class HookWeico {
                                 || loginButtonText == WEICO_LOGIN_TEXT_EN
                                 || loginButtonText == WEICO_LOGIN_TEXT_CF) {
                             loginButton.post {
-                                XposedHelpers.callMethod(param.thisObject, ON_CLICK)
-                                Toast.makeText(activity, AUTO_LOGIN, Toast.LENGTH_SHORT).show()
+                                XposedHelpers.callMethod(param.thisObject, Constant.ON_CLICK)
+                                Toast.makeText(activity, Constant.AUTO_LOGIN, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
