@@ -6,6 +6,8 @@ object Constant {
     const val COM_TENCENT_TIM = "com.tencent.tim"
     const val COM_TENCENT_QQ = "com.tencent.mobileqq"
     const val WEICO_PACKAGE_NAME = "com.weico.international"
+    const val COM_TENCENT_QQ_I = "com.tencent.mobileqqi"
+    const val COM_TENCENT_QQ_LITE = "com.tencent.qqlite"
 
     const val ANDROID_OS_HANDLER = "android.os.Handler"
     const val ANDROID_WIDGET_BUTTON = "android.widget.Button"
@@ -19,6 +21,15 @@ object Constant {
     const val AUTO_LOGIN = "自动登录成功"
 
     const val CONTAIN_TEXT = "允许登录"
+
+    const val QQ_INTERNATIONAL_TEXT = "确认在电脑上登录"
+    const val QQ_INTERNATIONAL_TEXT_CF = "確認在電腦上登錄"
+    const val QQ_INTERNATIONAL_TEXT_EN = "Are you sure you want to sign in on this computer"
+    const val QQ_INTERNATIONAL_TEXT_DE = "Möchten Sie sich wirklich auf diesem Computer anmelden"
+    const val QQ_INTERNATIONAL_TEXT_ES = "¿Está seguro que desea iniciar sesión en este equipo"
+    const val QQ_INTERNATIONAL_TEXT_FR = "Voulez-vous vraiment vous connecter sur cet ordinateur"
+    const val QQ_INTERNATIONAL_TEXT_JP = "このコンピュータにサインインしますか"
+    const val QQ_INTERNATIONAL_TEXT_KO = "이 컴퓨터에서 로그인하시겠습니까"
 
     const val WECHAT_LOGIN_TEXT = "登录"
     const val WECHAT_LOGIN_TEXT_CF = "登入"

@@ -8,8 +8,6 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import top.jowanxu.scanlogin.Constant
-import top.jowanxu.scanlogin.Constant.ANDROID_WIDGET_BUTTON
-import top.jowanxu.scanlogin.Constant.CONTAIN_TEXT
 import top.jowanxu.scanlogin.getPreferenceBoolean
 import top.jowanxu.scanlogin.tryHook
 
@@ -37,13 +35,13 @@ class HookTIMQQ {
             XposedHelpers.findAndHookMethod(aClass, Constant.ON_CREATE, Bundle::class.java, object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
                     declaredFields.filter {
-                        it.type.canonicalName.toString() == ANDROID_WIDGET_BUTTON
+                        it.type.canonicalName.toString() == Constant.ANDROID_WIDGET_BUTTON
                     }.forEach {
                         // 设置true
                         it.isAccessible = true
                         // 获取值
                         (it.get(param.thisObject) as Button).apply {
-                            if (text.toString().contains(CONTAIN_TEXT)) {
+                            if (text.toString().contains(Constant.CONTAIN_TEXT)) {
                                 performClick()
                             }
                         }
@@ -56,15 +54,16 @@ class HookTIMQQ {
     /**
      * 扫一扫电脑端二维码后，自动点击允许登录TIM/QQ按钮
      * @param lpParam LoadPackageParam
+     * @param methodName hook method name
      */
-    fun autoConfirmQQLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
+    fun autoConfirmQQLogin(lpParam: XC_LoadPackage.LoadPackageParam, methodName: String) {
         // 获取Class
         val aClass = XposedHelpers.findClassIfExists(QR_CODE_HOOK_CLASS_NAME, lpParam.classLoader) ?: return
         // 获取Class里面的Field
         val declaredFields = aClass.declaredFields
         tryHook(TAG, Constant.HOOK_ERROR) {
             // Hook指定方法
-            XposedHelpers.findAndHookMethod(aClass, Constant.DO_ON_CREATE, Bundle::class.java, object : XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(aClass, methodName, Bundle::class.java, object : XC_MethodHook() {
                 @Throws(Throwable::class)
                 override fun afterHookedMethod(param: MethodHookParam) {
                     // 每次打开都会调用两次doOnCreate
@@ -101,7 +100,16 @@ class HookTIMQQ {
                                 @Throws(Throwable::class)
                                 override fun afterHookedMethod(param: MethodHookParam) {
                                     // 当Button的Text为允许登录TIM/允许登录QQ的时候才实现点击
-                                    if (loginButton.text.toString().contains(Constant.CONTAIN_TEXT)) {
+                                    val text = loginButton.text.toString()
+                                    if (text.contains(Constant.CONTAIN_TEXT)
+                                            || text.contains(Constant.QQ_INTERNATIONAL_TEXT)
+                                            || text.contains(Constant.QQ_INTERNATIONAL_TEXT_CF)
+                                            || text.contains(Constant.QQ_INTERNATIONAL_TEXT_EN)
+                                            || text.contains(Constant.QQ_INTERNATIONAL_TEXT_DE)
+                                            || text.contains(Constant.QQ_INTERNATIONAL_TEXT_ES)
+                                            || text.contains(Constant.QQ_INTERNATIONAL_TEXT_FR)
+                                            || text.contains(Constant.QQ_INTERNATIONAL_TEXT_JP)
+                                            || text.contains(Constant.QQ_INTERNATIONAL_TEXT_KO)) {
                                         if (count == 0) {
                                             loginButton.performClick()
                                         }
