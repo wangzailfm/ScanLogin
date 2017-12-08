@@ -62,22 +62,14 @@ fun getPreferenceBoolean(context: Context, uriString: String = Constant.PREFEREN
  */
 inline fun <T> getPreferenceValue(context: Context,
         uriString: String, key: String, defValue: T, handler: (cursor: Cursor) -> T): T {
-
-    var cursor: Cursor? = null
-
-    try {
-        cursor = context.contentResolver.query(
+    tryHook(Constant.HOOK_ERROR, Constant.GET_PREFERENCE_PRE) {
+        context.contentResolver.query(
                 Uri.parse(uriString), null,
-                key, null, null)
-        cursor?.let {
-            if (it.moveToFirst()) {
-                return handler(it)
+                key, null, null).use {
+            it?.let {
+                if (it.moveToFirst()) return handler(it)
             }
         }
-    } catch (t: Throwable) {
-        XposedBridge.log("getPreferenceValueError------$t")
-    } finally {
-        cursor?.close()
     }
     return defValue
 }

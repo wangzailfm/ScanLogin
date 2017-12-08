@@ -18,6 +18,7 @@ object Constant {
     const val HANDLE_MESSAGE = "handleMessage"
 
     const val HOOK_ERROR = "Hook 出错 "
+    const val GET_PREFERENCE_PRE = "getPreferenceValueError------"
     const val AUTO_LOGIN = "自动登录成功"
 
     const val CONTAIN_TEXT = "允许登录"
