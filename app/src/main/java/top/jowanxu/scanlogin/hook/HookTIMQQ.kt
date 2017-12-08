@@ -34,6 +34,9 @@ class HookTIMQQ {
         tryHook(TAG, Constant.HOOK_ERROR) {
             XposedHelpers.findAndHookMethod(aClass, Constant.ON_CREATE, Bundle::class.java, object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
+                    val activity = param.thisObject as Activity
+                    val enable = getPreferenceBoolean(activity, key = Constant.WEB_QQ_ENABLE)
+                    if (!enable) return
                     declaredFields.filter {
                         it.type.canonicalName.toString() == Constant.ANDROID_WIDGET_BUTTON
                     }.forEach {
@@ -75,12 +78,9 @@ class HookTIMQQ {
                         count = 0
                     }
                     val activity = param.thisObject as Activity
-                    val enable = getPreferenceBoolean(activity,
-                            Constant.PREFERENCE_BOOLEAN,
-                            Constant.TIM_QQ_ENABLE, true)
-                    if (!enable) {
-                        return
-                    }
+                    val enable = getPreferenceBoolean(activity, key = Constant.TIM_QQ_ENABLE)
+                    if (!enable) return
+
                     // 获取Handler全名
                     val hookHandlerClassName = declaredFields.first {
                         it.type.canonicalName.toString() == Constant.ANDROID_OS_HANDLER

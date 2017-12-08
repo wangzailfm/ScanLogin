@@ -47,6 +47,7 @@ object Constant {
     const val BOOLEAN_CODE = 0
     const val ICON_ENABLE = "iconVisibility"
     const val TIM_QQ_ENABLE = "timQQ"
+    const val WEB_QQ_ENABLE = "webQQ"
     const val WECHAT_ENABLE = "weChat"
     const val WEICO_ENABLE = "weico"
 }

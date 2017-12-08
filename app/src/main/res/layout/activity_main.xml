@@ -62,6 +62,13 @@
         android:text="@string/module_setting_qq_tim"/>
 
     <Switch
+        android:id="@+id/webQQ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/module_setting_web_qq"/>
+
+    <Switch
         android:id="@+id/weico"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

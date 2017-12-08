@@ -40,12 +40,9 @@ class HookWeico {
                 @Throws(Throwable::class)
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val activity = param.thisObject as Activity
-                    val enable = getPreferenceBoolean(activity,
-                            Constant.PREFERENCE_BOOLEAN,
-                            Constant.WEICO_ENABLE, true)
-                    if (!enable) {
-                        return
-                    }
+                    val enable = getPreferenceBoolean(activity, key = Constant.WEICO_ENABLE)
+                    if (!enable) return
+
                     Thread.sleep(500)
                     declaredFields.filter {
                         it.type.canonicalName.toString() == (ANDROID_WIDGET_TEXTVIEW)

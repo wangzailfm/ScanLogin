@@ -14,7 +14,7 @@
             android:value="true"/>
         <meta-data
             android:name="xposeddescription"
-            android:value="Automatic confirmation login by scanning QRCode security login to QQ/TIM, and WeChat"/>
+            android:value="@string/module_description"/>
         <meta-data
             android:name="xposedminversion"
             android:value="53"/>

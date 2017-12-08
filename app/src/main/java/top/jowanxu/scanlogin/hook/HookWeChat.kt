@@ -32,12 +32,9 @@ class HookWeChat {
                 @Throws(Throwable::class)
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val activity = param.thisObject as Activity
-                    val enable = getPreferenceBoolean(activity,
-                            Constant.PREFERENCE_BOOLEAN,
-                            Constant.WECHAT_ENABLE, true)
-                    if (!enable) {
-                        return
-                    }
+                    val enable = getPreferenceBoolean(activity, key = Constant.WECHAT_ENABLE)
+                    if (!enable) return
+
                     declaredFields.filter {
                         it.type.canonicalName.toString() == (Constant.ANDROID_WIDGET_BUTTON)
                     }.forEach {

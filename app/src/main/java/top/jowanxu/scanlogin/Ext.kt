@@ -1,10 +1,14 @@
 package top.jowanxu.scanlogin
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.DONT_KILL_APP
 import android.database.Cursor
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import de.robv.android.xposed.XposedBridge
 
 
@@ -12,6 +16,11 @@ import de.robv.android.xposed.XposedBridge
  * 打印日志
  */
 fun String.loge(content: String) = Log.e(this, content)
+
+/**
+ * Toast
+ */
+fun Context.toast(content: String) = Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
 
 /**
  * try catch
@@ -40,7 +49,7 @@ inline fun tryHookException(tag: String, content: String, hook: () -> Unit, erro
 /**
  * 获取SharedPreference里面的boolean类型值
  */
-fun getPreferenceBoolean(context: Context,uriString: String, key: String, defValue: Boolean): Boolean {
+fun getPreferenceBoolean(context: Context, uriString: String = Constant.PREFERENCE_BOOLEAN, key: String, defValue: Boolean = true): Boolean {
 
     return getPreferenceValue(context, uriString, key, defValue) {
         // boolean类型的值特殊处理
@@ -72,3 +81,9 @@ inline fun <T> getPreferenceValue(context: Context,
     }
     return defValue
 }
+
+/**
+ * 是否显示桌面图标
+ */
+fun PackageManager.setComponentEnabled(componentName: ComponentName, enable: Boolean) =
+        this.setComponentEnabledSetting(componentName, if (enable) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED, DONT_KILL_APP)
