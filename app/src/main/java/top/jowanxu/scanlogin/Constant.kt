@@ -8,6 +8,7 @@ object Constant {
     const val WEICO_PACKAGE_NAME = "com.weico.international"
     const val COM_TENCENT_QQ_I = "com.tencent.mobileqqi"
     const val COM_TENCENT_QQ_LITE = "com.tencent.qqlite"
+    const val TV_DAMAKU_BILI = "tv.danmaku.bili"
 
     const val ANDROID_OS_HANDLER = "android.os.Handler"
     const val ANDROID_WIDGET_BUTTON = "android.widget.Button"

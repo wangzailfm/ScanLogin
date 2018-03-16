@@ -2,10 +2,7 @@ package top.jowanxu.scanlogin
 
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.callbacks.XC_LoadPackage
-import top.jowanxu.scanlogin.hook.HookScanLogin
-import top.jowanxu.scanlogin.hook.HookTIMQQ
-import top.jowanxu.scanlogin.hook.HookWeChat
-import top.jowanxu.scanlogin.hook.HookWeico
+import top.jowanxu.scanlogin.hook.*
 
 /**
  * @author Jowan
@@ -34,6 +31,9 @@ class Tutorial : IXposedHookLoadPackage {
                         autoConfirmWeicoLogin(lpParam)
                         removeWeicoStartAD(lpParam)
                     }
+                Constant.TV_DAMAKU_BILI -> {
+                    HookBili().autoBiliConfirmQQLogin(lpParam)
+                }
                 else -> {
                 }
             }
