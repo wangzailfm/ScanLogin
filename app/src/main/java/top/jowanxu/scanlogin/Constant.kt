@@ -9,6 +9,7 @@ object Constant {
     const val COM_TENCENT_QQ_I = "com.tencent.mobileqqi"
     const val COM_TENCENT_QQ_LITE = "com.tencent.qqlite"
     const val TV_DAMAKU_BILI = "tv.danmaku.bili"
+    const val COM_SINA_WEIBO = "com.sina.weibo"
 
     const val ANDROID_OS_HANDLER = "android.os.Handler"
     const val ANDROID_WIDGET_BUTTON = "android.widget.Button"
@@ -52,4 +53,6 @@ object Constant {
     const val WEB_QQ_ENABLE = "webQQ"
     const val WECHAT_ENABLE = "weChat"
     const val WEICO_ENABLE = "weico"
+    const val BILI_ENABLE = "bili"
+    const val WEIBO_ENABLE = "weibo"
 }
