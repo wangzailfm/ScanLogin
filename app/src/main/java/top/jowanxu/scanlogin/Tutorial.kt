@@ -31,7 +31,7 @@ class Tutorial : IXposedHookLoadPackage {
                         autoConfirmWeicoLogin(lpParam)
                         removeWeicoStartAD(lpParam)
                     }
-                Constant.TV_DAMAKU_BILI -> {
+                Constant.TV_DAMAKU_BILI, Constant.COM_BILI_APP -> {
                     HookBili().autoBiliConfirmLogin(lpParam)
                 }
                 Constant.COM_SINA_WEIBO -> {

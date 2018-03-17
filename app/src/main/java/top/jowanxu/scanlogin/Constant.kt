@@ -9,6 +9,7 @@ object Constant {
     const val COM_TENCENT_QQ_I = "com.tencent.mobileqqi"
     const val COM_TENCENT_QQ_LITE = "com.tencent.qqlite"
     const val TV_DAMAKU_BILI = "tv.danmaku.bili"
+    const val COM_BILI_APP = "com.bilibili.app.in"
     const val COM_SINA_WEIBO = "com.sina.weibo"
 
     const val ANDROID_OS_HANDLER = "android.os.Handler"
