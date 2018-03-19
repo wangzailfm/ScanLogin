@@ -49,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+
             android:text="@string/module_setting_icon"/>
 
         <Switch
@@ -92,6 +93,20 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="@string/module_setting_weibo"/>
+
+        <Switch
+            android:id="@+id/taobao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/module_setting_taobao"/>
+
+        <Switch
+            android:id="@+id/jingdong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/module_setting_jingdong"/>
 
     </LinearLayout>
 

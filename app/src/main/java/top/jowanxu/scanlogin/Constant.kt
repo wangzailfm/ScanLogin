@@ -11,14 +11,20 @@ object Constant {
     const val TV_DAMAKU_BILI = "tv.danmaku.bili"
     const val COM_BILI_APP = "com.bilibili.app.in"
     const val COM_SINA_WEIBO = "com.sina.weibo"
+    const val COM_TAOBAO_TAOBAO = "com.taobao.taobao"
+    const val COM_JINGDONG_APP = "com.jingdong.app.mall"
 
     const val ANDROID_OS_HANDLER = "android.os.Handler"
     const val ANDROID_WIDGET_BUTTON = "android.widget.Button"
     const val ANDROID_WIDGET_TEXTVIEW = "android.widget.TextView"
+    const val ANDROID_CONTENT_CONTEXTWRAPPER = "android.content.ContextWrapper"
+    const val JAVA_LANG_STRING = "java.lang.String"
     const val ON_CREATE = "onCreate"
     const val DO_ON_CREATE = "doOnCreate"
     const val ON_CLICK = "onClick"
     const val HANDLE_MESSAGE = "handleMessage"
+    const val GET_APPLICATION_CONTEXT = "getApplicationContext"
+    const val METHOD_RUN = "run"
 
     const val HOOK_ERROR = "Hook 出错 "
     const val GET_PREFERENCE_PRE = "getPreferenceValueError------"
@@ -44,6 +50,8 @@ object Constant {
     const val WEICO_LOGIN_TEXT_EN = "Sign in"
     const val WEICO_LOGIN_TEXT_CF = "確認登錄"
 
+    const val JINGDONG_LOGIN_TEXT = "确认登录电脑端"
+
     const val SHARED_NAME = "_preferences"
     const val PREFERENCE_BOOLEAN = "content://top.jowanxu.scanlogin.provider/boolean"
     const val AUTHORITY = "top.jowanxu.scanlogin.provider"
@@ -56,4 +64,6 @@ object Constant {
     const val WEICO_ENABLE = "weico"
     const val BILI_ENABLE = "bili"
     const val WEIBO_ENABLE = "weibo"
+    const val TAOBAO_ENABLE = "taobao"
+    const val JINGDONG_ENABLE = "jingdong"
 }

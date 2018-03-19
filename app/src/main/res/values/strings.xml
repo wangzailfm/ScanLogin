@@ -13,9 +13,13 @@
     <string name="module_setting_weico">微博国际版确认登录</string>
     <string name="module_setting_bili">哔哩哔哩确认登录</string>
     <string name="module_setting_weibo">微博确认登录</string>
+    <string name="module_setting_taobao">淘宝确认登录</string>
+    <string name="module_setting_jingdong">京东确认登录</string>
     <string name="restart_qq_tim">设置成功，重启QQ/TIM后生效</string>
     <string name="restart_wechat">设置成功，重启微信后生效</string>
     <string name="restart_weico">设置成功，重启微博国际版后生效</string>
     <string name="restart_bili">设置成功，重启哔哩哔哩后生效</string>
     <string name="restart_weibo">设置成功，重启微博后生效</string>
+    <string name="restart_taobao">设置成功，重启淘宝后生效</string>
+    <string name="restart_jingdong">设置成功，重启京东后生效</string>
 </resources>

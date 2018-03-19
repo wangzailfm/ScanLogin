@@ -36,7 +36,7 @@ class HookWeChat {
                     if (!enable) return
 
                     declaredFields.filter {
-                        it.type.canonicalName.toString() == (Constant.ANDROID_WIDGET_BUTTON)
+                        it.type.canonicalName.toString() == Constant.ANDROID_WIDGET_BUTTON
                     }.forEach {
                         it.isAccessible = true
                         val loginButton = it.get(param.thisObject) as Button

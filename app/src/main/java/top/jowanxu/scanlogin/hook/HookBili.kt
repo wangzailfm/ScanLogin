@@ -17,12 +17,13 @@ class HookBili {
         private const val TV_DAMAKU_BILI_UI_WEBVIEW_ANON_ACTIVITY =
             "tv.danmaku.bili.ui.webview.MWebActivity$9"
         private const val HOOK_BILIBILI_METHOD_NAME = "onPageFinished"
+        private const val COMFIRM_URL = "passport.bilibili.com/mobile/h5-confirm.html"
         private const val JS_CODE =
             "javascript:setTimeout(function() { document.querySelector('a[class=\"btn sure-btn\"]').click()}, 100);"
         private val TAG = HookBili::class.java.simpleName
     }
 
-    fun autoBiliConfirmLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
+    fun autoConfirmBiliLogin(lpParam: XC_LoadPackage.LoadPackageParam) {
         val activityClass =
             XposedHelpers.findClassIfExists(TV_DAMAKU_BILI_UI_WEBVIEW_ACTIVITY, lpParam.classLoader)
         if (activityClass != null) {
@@ -51,7 +52,7 @@ class HookBili {
                                 object : XC_MethodHook() {
                                     override fun afterHookedMethod(param: MethodHookParam) {
                                         val url = param.args[1] as String? ?: return
-                                        if (!url.contains("passport.bilibili.com/mobile/h5-confirm.html")) {
+                                        if (!url.contains(COMFIRM_URL)) {
                                             return
                                         }
                                         val webView = param.args[0] as WebView? ?: return

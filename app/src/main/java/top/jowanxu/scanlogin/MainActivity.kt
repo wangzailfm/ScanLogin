@@ -8,13 +8,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import top.jowanxu.scanlogin.provider.Preference
 
 class MainActivity : Activity() {
-    private var iconEnable: Boolean by Preference(this, Constant.ICON_ENABLE, true)
+    private var iconEnable: Boolean by Preference(this, Constant.ICON_ENABLE, false)
     private var weChatEnable: Boolean by Preference(this, Constant.WECHAT_ENABLE, true)
     private var timQQEnable: Boolean by Preference(this, Constant.TIM_QQ_ENABLE, true)
     private var webQQEnable: Boolean by Preference(this, Constant.WEB_QQ_ENABLE, true)
     private var weicoEnable: Boolean by Preference(this, Constant.WEICO_ENABLE, true)
     private var biliEnable: Boolean by Preference(this, Constant.BILI_ENABLE, true)
     private var weiboEnable: Boolean by Preference(this, Constant.WEIBO_ENABLE, true)
+    private var taobaoEnable: Boolean by Preference(this, Constant.TAOBAO_ENABLE, true)
+    private var jingdongEnable: Boolean by Preference(this, Constant.JINGDONG_ENABLE, true)
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
@@ -70,6 +72,14 @@ class MainActivity : Activity() {
                 isChecked = weicoEnable
                 setOnCheckedChangeListener(onCheckedChangeListener)
             }
+            taobao.apply {
+                isChecked = taobaoEnable
+                setOnCheckedChangeListener(onCheckedChangeListener)
+            }
+            jingdong.apply {
+                isChecked = jingdongEnable
+                setOnCheckedChangeListener(onCheckedChangeListener)
+            }
         }
     }
 
@@ -116,6 +126,14 @@ class MainActivity : Activity() {
                 R.id.weibo -> {
                     weiboEnable = isChecked
                     toast(getString(R.string.restart_weibo))
+                }
+                R.id.taobao -> {
+                    taobaoEnable = isChecked
+                    toast(getString(R.string.restart_taobao))
+                }
+                R.id.jingdong -> {
+                    jingdongEnable = isChecked
+                    toast(getString(R.string.restart_jingdong))
                 }
             }
         }
